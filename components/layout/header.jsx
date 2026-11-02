@@ -1,11 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Menu, X } from "lucide-react";
 
 export default function Header() {
   const { resolvedTheme, setTheme } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Explore Studios", href: "/studios" },
+    { name: "Categories", href: "/categories" },
+  ];
 
   return (
     <header className="border-b bg-background">
@@ -15,9 +23,11 @@ export default function Header() {
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
-          <Link href="/">Home</Link>
-          <Link href="/studios">Explore Studios</Link>
-          <Link href="/categories">Categories</Link>
+          {navLinks.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.name}
+            </Link>
+          ))}
         </div>
 
         <div className="flex items-center gap-3">
@@ -37,12 +47,42 @@ export default function Header() {
 
           <Link
             href="/register"
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-md"
+            className="hidden sm:block bg-primary text-primary-foreground px-4 py-2 rounded-md"
           >
             Register
           </Link>
+
+          <button
+            className="md:hidden p-2"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X /> : <Menu />}
+          </button>
         </div>
       </nav>
+
+      {menuOpen && (
+        <div className="md:hidden border-t p-4 flex flex-col gap-4">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+
+          <Link href="/login" onClick={() => setMenuOpen(false)}>
+            Login
+          </Link>
+
+          <Link href="/register" onClick={() => setMenuOpen(false)}>
+            Register
+          </Link>
+        </div>
+      )}
     </header>
   );
 }
