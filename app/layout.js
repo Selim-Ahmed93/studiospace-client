@@ -16,8 +16,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "StudioSpace",
-  description: "Find and book creative studios with StudioSpace.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  ),
+  title: {
+    default: "StudioSpace — Book creative studios by the hour",
+    template: "%s | StudioSpace",
+  },
+  description:
+    "Discover and book photography studios, sound stages, podcast rooms, music suites, and art workshops across Bangladesh.",
+  keywords: [
+    "studio booking",
+    "photography studio",
+    "sound stage",
+    "podcast room",
+    "music studio",
+    "art workshop",
+    "Bangladesh",
+  ],
+  openGraph: {
+    title: "StudioSpace — Book creative studios by the hour",
+    description:
+      "Find the right space for your next shoot, recording, or workshop.",
+    type: "website",
+    siteName: "StudioSpace",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "StudioSpace — Book creative studios by the hour",
+    description:
+      "Find the right space for your next shoot, recording, or workshop.",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -27,11 +56,11 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <ThemeProvider>
           <Providers>
             <Header />
-            {children}
+            <div className="flex-1">{children}</div>
             <Footer />
           </Providers>
         </ThemeProvider>
