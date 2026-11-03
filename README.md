@@ -2,7 +2,7 @@
 
 StudioSpace is a full-stack marketplace where creators discover and book photography studios, sound stages, podcast rooms, music suites, and art workshops by the hour. Hosts list their spaces, set pricing, and review booking requests; creators can track every request from pending approval to a confirmed session.
 
-- **Live site:** https://studiospace-client.vercel.app
+- **Live site:** https://studiospace-client-g428.vercel.app
 - **Live API:** https://studiospace-server-7gad.onrender.com
 - **Client repository:** https://github.com/Selim-Ahmed93/studiospace-client
 - **Server repository:** https://github.com/Selim-Ahmed93/studiospace-server
