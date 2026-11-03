@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  ArrowRight,
   CalendarDays,
+  CalendarRange,
   RefreshCw,
   Sparkles,
   WifiOff,
@@ -14,13 +16,16 @@ import BookingCard from "@/components/bookings/booking-card";
 import ConfirmDialog from "@/components/shared/confirm-dialog";
 import EmptyState from "@/components/shared/empty-state";
 import PageSpinner from "@/components/shared/page-spinner";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { getApiErrorMessage } from "@/lib/api-error";
 import { useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { cancelBooking, fetchMyBookings } from "@/services/bookings";
 
 const statusFilters = ["All", "Pending", "Confirmed", "Completed", "Cancelled"];
+
+const brandButtonClass =
+  "inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-brand px-4 text-[13px] font-semibold text-brand-foreground transition-colors hover:bg-brand-strong focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand/40";
 
 export default function MyBookings() {
   const { data: session } = useSession();
@@ -115,27 +120,26 @@ export default function MyBookings() {
   );
 
   return (
-    <div>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mx-auto w-full max-w-[47.5rem] px-4 pb-16 pt-10 sm:px-6 lg:pt-14">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <span className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-            Creator dashboard
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-brand-soft-foreground ring-1 ring-brand/20">
+            <CalendarRange className="size-3" aria-hidden="true" />
+            Production Schedule
           </span>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-            My bookings
+
+          <h1 className="mt-3 text-[2rem] font-bold leading-tight tracking-tight sm:text-[2.15rem]">
+            My Studio Bookings
           </h1>
-          <p className="mt-3 max-w-2xl text-muted-foreground">
-            Track every request you&apos;ve sent, from pending approval to
-            confirmed sessions.
+
+          <p className="mt-2 max-w-md text-sm text-muted-foreground">
+            Track reservation statuses, cancellation requests, and shoot times.
           </p>
         </div>
 
-        <Link
-          href="/studios"
-          className={cn(buttonVariants(), "h-10 shrink-0")}
-        >
-          <Sparkles className="size-4" aria-hidden="true" />
-          Explore studios
+        <Link href="/studios" className={cn(brandButtonClass, "sm:mt-10")}>
+          Explore More Studios
+          <ArrowRight className="size-4" aria-hidden="true" />
         </Link>
       </div>
 
@@ -164,7 +168,7 @@ export default function MyBookings() {
             title="No bookings yet"
             description="Find a space for your next shoot, recording, or workshop, and send your first request."
             action={
-              <Link href="/studios" className={cn(buttonVariants())}>
+              <Link href="/studios" className={brandButtonClass}>
                 Explore studios
                 <Sparkles className="size-4" aria-hidden="true" />
               </Link>
@@ -172,26 +176,26 @@ export default function MyBookings() {
           />
         ) : (
           <>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
               {statusFilters.map((status) => (
                 <button
                   key={status}
                   type="button"
                   onClick={() => setActiveFilter(status)}
                   className={cn(
-                    "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
+                    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors",
                     activeFilter === status
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                      ? "bg-brand-soft text-brand-soft-foreground ring-1 ring-brand/25"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   )}
                   aria-pressed={activeFilter === status}
                 >
                   {status}
                   <span
                     className={cn(
-                      "rounded-full px-1.5 py-0.5 text-[0.65rem] font-bold",
+                      "rounded-full px-1 text-[9px] font-bold",
                       activeFilter === status
-                        ? "bg-primary-foreground/20"
+                        ? "bg-brand/15 text-brand-soft-foreground"
                         : "bg-muted"
                     )}
                   >
@@ -201,7 +205,7 @@ export default function MyBookings() {
               ))}
             </div>
 
-            <div className="mt-6 space-y-4">
+            <div className="mt-4 space-y-3">
               {filteredBookings.length === 0 ? (
                 <EmptyState
                   icon={CalendarDays}

@@ -4,12 +4,12 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "studiospace-newsletter";
 
-export default function NewsletterForm() {
+export default function NewsletterForm({ inverted = false }) {
   const [email, setEmail] = useState("");
 
   const handleSubmit = (event) => {
@@ -40,26 +40,42 @@ export default function NewsletterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 space-y-2">
-      <label htmlFor="newsletter-email" className="sr-only">
+      <label
+        htmlFor={inverted ? "newsletter-email-footer" : "newsletter-email"}
+        className="sr-only"
+      >
         Email address
       </label>
       <div className="flex gap-2">
         <Input
-          id="newsletter-email"
+          id={inverted ? "newsletter-email-footer" : "newsletter-email"}
           type="email"
           name="email"
           autoComplete="email"
           placeholder="you@example.com"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="h-10 bg-background"
+          className={cn(
+            "h-10",
+            inverted
+              ? "border-white/15 bg-white/5 text-white placeholder:text-white/40 focus-visible:border-brand/60"
+              : "bg-background"
+          )}
         />
-        <Button type="submit" size="icon" className="size-10 shrink-0">
+        <button
+          type="submit"
+          className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-brand text-brand-foreground transition-colors hover:bg-brand-strong focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-brand/40"
+        >
           <ArrowRight className="size-4" aria-hidden="true" />
           <span className="sr-only">Subscribe to the newsletter</span>
-        </Button>
+        </button>
       </div>
-      <p className="text-xs leading-5 text-muted-foreground">
+      <p
+        className={cn(
+          "text-xs leading-5",
+          inverted ? "text-white/40" : "text-muted-foreground"
+        )}
+      >
         Occasional updates about new studios and openings. No spam.
       </p>
     </form>

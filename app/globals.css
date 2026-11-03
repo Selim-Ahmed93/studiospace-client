@@ -34,6 +34,12 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
+  /* Amber accent used by the marketplace chrome (header, footer, bookings) */
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-soft-foreground: var(--brand-soft-foreground);
+  --color-brand-foreground: var(--brand-foreground);
   --color-primary: var(--primary);
   --color-popover-foreground: var(--popover-foreground);
   --color-popover: var(--popover);
@@ -49,7 +55,7 @@
 }
 
 :root {
-  --background: oklch(0.985 0.004 95);
+  --background: oklch(0.995 0.002 95);
   --foreground: oklch(0.19 0.015 275);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.19 0.015 275);
@@ -57,6 +63,11 @@
   --popover-foreground: oklch(0.19 0.015 275);
   --primary: oklch(0.52 0.19 275);
   --primary-foreground: oklch(0.99 0 0);
+  --brand: oklch(0.769 0.188 70.08);
+  --brand-strong: oklch(0.666 0.179 58.3);
+  --brand-soft: oklch(0.987 0.022 95.3);
+  --brand-soft-foreground: oklch(0.555 0.163 49);
+  --brand-foreground: oklch(0.995 0.005 95);
   --secondary: oklch(0.96 0.01 275);
   --secondary-foreground: oklch(0.3 0.03 275);
   --muted: oklch(0.96 0.008 275);
@@ -92,6 +103,11 @@
   --popover-foreground: oklch(0.96 0.005 275);
   --primary: oklch(0.72 0.15 275);
   --primary-foreground: oklch(0.16 0.02 275);
+  --brand: oklch(0.8 0.17 75);
+  --brand-strong: oklch(0.83 0.15 80);
+  --brand-soft: oklch(0.32 0.05 70);
+  --brand-soft-foreground: oklch(0.86 0.12 82);
+  --brand-foreground: oklch(0.18 0.02 70);
   --secondary: oklch(0.25 0.02 275);
   --secondary-foreground: oklch(0.96 0.005 275);
   --muted: oklch(0.25 0.02 275);
