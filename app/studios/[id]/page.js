@@ -4,7 +4,13 @@ import { notFound } from "next/navigation";
 import StudioDetails from "@/components/studios/studio-details";
 
 const getStudio = cache(async (id) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  // Server-side rendering can call the API directly. API_PROXY_TARGET is the
+  // server-only Render URL; NEXT_PUBLIC_API_URL remains a fallback for setups
+  // that still point the browser at the API directly.
+  const configuredBaseUrl =
+    process.env.API_PROXY_TARGET?.trim() ||
+    process.env.NEXT_PUBLIC_API_URL?.trim();
+  const baseUrl = configuredBaseUrl?.replace(/\/+$/, "");
 
   if (!baseUrl) return null;
 
