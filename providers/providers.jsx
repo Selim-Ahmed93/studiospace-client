@@ -13,6 +13,7 @@ export default function Providers({ children }) {
         position="top-right"
         richColors
         closeButton
+        duration={6000}
         theme={resolvedTheme === "dark" ? "dark" : "light"}
       />
     </>

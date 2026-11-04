@@ -9,9 +9,9 @@ import {
 
 import {
   GitHubLogo,
-  InstagramLogo,
+  // InstagramLogo,
   LinkedInLogo,
-  XLogo,
+  // XLogo,
 } from "@/components/icons/social-icons";
 import NewsletterForm from "@/components/layout/newsletter-form";
 import { STUDIO_CATEGORIES } from "@/lib/constants";
@@ -43,10 +43,10 @@ const quickLinks = [
 ];
 
 const socialLinks = [
-  { label: "X", href: "https://x.com", Icon: XLogo },
-  { label: "Instagram", href: "https://instagram.com", Icon: InstagramLogo },
-  { label: "LinkedIn", href: "https://linkedin.com", Icon: LinkedInLogo },
-  { label: "GitHub", href: "https://github.com", Icon: GitHubLogo },
+  // { label: "X", href: "https://x.com", Icon: XLogo },
+  // { label: "Instagram", href: "https://instagram.com", Icon: InstagramLogo },
+  { label: "LinkedIn", href: "www.linkedin.com/in/selim-ahmed93", Icon: LinkedInLogo },
+  { label: "GitHub", href: "https://github.com/Selim-Ahmed93", Icon: GitHubLogo },
 ];
 
 export default function Footer() {

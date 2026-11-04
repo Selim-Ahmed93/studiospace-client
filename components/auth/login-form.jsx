@@ -15,6 +15,8 @@ import PageSpinner from "@/components/shared/page-spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuthCapabilities } from "@/hooks/use-auth-capabilities";
+import { getAuthErrorMessage, getPostAuthPath } from "@/lib/auth-error";
 import { signIn, useSession } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +28,7 @@ const loginSchema = z.object({
 export default function LoginForm() {
   const router = useRouter();
   const { data: session, isPending } = useSession();
+  const { googleAuthEnabled } = useAuthCapabilities();
   const [showPassword, setShowPassword] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -40,46 +43,51 @@ export default function LoginForm() {
   });
 
   const onSubmit = async (values) => {
-    const { error } = await signIn.email({
-      email: values.email,
-      password: values.password,
-    });
+    try {
+      const { error } = await signIn.email({
+        email: values.email,
+        password: values.password,
+      });
 
-    if (error) {
-      const message = error.message || "Invalid email or password.";
+      if (error) {
+        const message = getAuthErrorMessage(
+          error,
+          "Invalid email or password."
+        );
+        setError("root", { message });
+        toast.error(message);
+        return;
+      }
+
+      toast.success("Welcome back!");
+
+      const destination = getPostAuthPath(window.location.search);
+      router.push(destination);
+      router.refresh();
+    } catch {
+      const message =
+        "Cannot reach the StudioSpace API. Check your connection and try again.";
       setError("root", { message });
       toast.error(message);
-      return;
     }
-
-    toast.success("Welcome back!");
-
-    const redirect = new URLSearchParams(window.location.search).get(
-      "redirect"
-    );
-    const destination =
-      redirect?.startsWith("/") && !redirect.startsWith("//")
-        ? redirect
-        : "/dashboard";
-
-    router.push(destination);
-    router.refresh();
   };
 
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
 
     try {
+      const callbackURL = `${window.location.origin}${getPostAuthPath(
+        window.location.search
+      )}`;
       const { data, error } = await signIn.social({
         provider: "google",
-        callbackURL: `${window.location.origin}/dashboard`,
+        callbackURL,
       });
 
       if (error) {
         toast.error(
-          error.message || "Google login is not available right now."
+          getAuthErrorMessage(error, "Google login is not available right now.")
         );
-        setGoogleLoading(false);
         return;
       }
 
@@ -87,14 +95,17 @@ export default function LoginForm() {
         window.location.href = data.url;
       }
     } catch {
-      toast.error("Google login is not available right now.");
+      toast.error(
+        "Could not reach Google sign-in. Check your connection and try again."
+      );
+    } finally {
       setGoogleLoading(false);
     }
   };
 
   useEffect(() => {
     if (!isPending && session) {
-      router.replace("/dashboard");
+      router.replace(getPostAuthPath(window.location.search));
     }
   }, [isPending, session, router]);
 
@@ -184,28 +195,36 @@ export default function LoginForm() {
         </Button>
       </form>
 
-      <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-border" />
-        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-          or
-        </span>
-        <div className="h-px flex-1 bg-border" />
-      </div>
+      {/* Only render Google when the API confirms that OAuth is configured. */}
+      {googleAuthEnabled ? (
+        <>
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              or
+            </span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
 
-      <Button
-        type="button"
-        variant="outline"
-        className="h-11 w-full"
-        onClick={handleGoogleLogin}
-        disabled={googleLoading}
-      >
-        {googleLoading ? (
-          <LoaderCircle className="size-4 animate-spin" aria-hidden="true" />
-        ) : (
-          <GoogleIcon className="size-4" />
-        )}
-        Continue with Google
-      </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 w-full"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading}
+          >
+            {googleLoading ? (
+              <LoaderCircle
+                className="size-4 animate-spin"
+                aria-hidden="true"
+              />
+            ) : (
+              <GoogleIcon className="size-4" />
+            )}
+            Continue with Google
+          </Button>
+        </>
+      ) : null}
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         New to StudioSpace?{" "}

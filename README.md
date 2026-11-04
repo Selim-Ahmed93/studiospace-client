@@ -75,16 +75,21 @@ npm install
 Create `.env.local` in the project root:
 
 ```env
-NEXT_PUBLIC_API_URL=https://studiospace-server-7gad.onrender.com
+# Recommended for local development: run the API in ../studiospace-server.
+NEXT_PUBLIC_API_URL=http://localhost:5000
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
+
+To test the login flow against the deployed Render API instead, set
+`NEXT_PUBLIC_API_URL=https://studiospace-server-7gad.onrender.com` **and** make
+sure the API trusts `http://localhost:3000` through `ADDITIONAL_CLIENT_URLS`.
+Without that origin entry, Better Auth rejects local sign-in with
+`INVALID_ORIGIN`.
 
 | Variable | Required | Purpose |
 |---|---|---|
 | `NEXT_PUBLIC_API_URL` | Yes | Base URL of the StudioSpace API |
 | `NEXT_PUBLIC_SITE_URL` | No | Canonical site URL used for metadata; defaults to `http://localhost:3000` |
-
-To run against a local API, use `NEXT_PUBLIC_API_URL=http://localhost:5000` and start the server from the `studiospace-server` repository.
 
 ### 4. Run the development server
 
@@ -124,6 +129,7 @@ npm run lint   # Run ESLint
 The client talks directly to the deployed Express API. Key endpoints:
 
 - `POST /api/auth/sign-up/email`, `POST /api/auth/sign-in/email`, `GET /api/auth/get-session`
+- `GET /api/config` (returns public capability flags such as whether Google is enabled)
 - `GET /api/studios`, `GET /api/studios/:id`
 - `POST /api/studios`, `PATCH /api/studios/:id`, `DELETE /api/studios/:id`
 - `POST /api/bookings`, `GET /api/bookings/my-bookings`, `PATCH /api/bookings/:id/cancel`
@@ -133,7 +139,8 @@ Studio and booking write routes require an authenticated session. The API return
 ## Authentication notes
 
 - Sessions are stored in HTTP-only cookies. The server uses `SameSite=None; Secure` in HTTPS production and `SameSite=Lax` for local HTTP so the Vercel frontend and Render API can communicate across sites.
-- Google login only appears functional when the server has valid OAuth credentials. Without them, the button shows an error toast instead of redirecting.
+- The client reads `GET /api/config` and only renders the Google button when the API reports `googleAuthEnabled: true`. If Google is not configured, the button is hidden instead of producing a `PROVIDER_NOT_FOUND` error.
+- After login or sign-up, users are sent to the `redirect` page they came from, or to the homepage. A visible **Back to home** link is always available on both auth screens.
 - Protected pages redirect unauthenticated visitors to `/login?redirect=...` and return them to the original page after login.
 
 ## Deployment
